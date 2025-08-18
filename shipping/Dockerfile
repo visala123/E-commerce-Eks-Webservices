@@ -1,0 +1,60 @@
+# #
+# # Build
+# #
+# #FROM debian:10 AS build
+# FROM debian:12 AS build
+
+# #RUN apt-get update && apt-get -y install maven
+# RUN apt-get update && apt-get -y install maven openjdk-17-jdk
+
+# WORKDIR /opt/shipping
+
+# COPY pom.xml /opt/shipping/
+# RUN mvn dependency:resolve
+# COPY src /opt/shipping/src/
+# RUN mvn package
+
+# #
+# # Run
+# #
+# #FROM openjdk:8-jdk
+# FROM openjdk:17-slim AS build
+
+# EXPOSE 8080
+
+# WORKDIR /opt/shipping
+
+# ENV CART_ENDPOINT=cart:8080
+# ENV DB_HOST=mysql
+
+# COPY --from=build /opt/shipping/target/shipping-1.0.jar shipping.jar
+
+# CMD [ "java", "-Xmn256m", "-Xmx768m", "-jar", "shipping.jar" ]
+
+# -------- Stage 1: Build --------
+FROM debian:12 AS build
+
+RUN apt-get update && apt-get -y install maven openjdk-17-jdk
+
+WORKDIR /opt/shipping
+
+COPY pom.xml /opt/shipping/
+RUN mvn dependency:resolve
+
+COPY src /opt/shipping/src/
+RUN mvn package
+
+# -------- Stage 2: Runtime --------
+FROM openjdk:17-slim AS runtime
+
+EXPOSE 8080
+
+WORKDIR /opt/shipping
+
+ENV CART_ENDPOINT=cart:8080
+ENV DB_HOST=mysql
+
+COPY --from=build /opt/shipping/target/shipping-1.0.jar shipping.jar
+
+CMD [ "java", "-Xmn256m", "-Xmx768m", "-jar", "shipping.jar" ]
+
