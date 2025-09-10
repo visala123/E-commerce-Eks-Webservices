@@ -1,17 +1,17 @@
-name: Build and Deploy ratings Service
+name: Build and Deploy payment Service
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'ratings/**'
-      - 'Helmcharts/ratings/**'
+      - 'payment/**'
+      - 'Helmcharts/payment/**'
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build and Push ratings Image
+    name: Build and Push payment Image
     runs-on: ubuntu-latest
     permissions:  
       id-token: write   # required for OIDC
@@ -30,14 +30,14 @@ jobs:
       # - name: Login to Amazon ECR
       #   id: login-ecr
       #   uses: aws-actions/amazon-ecr-login@v2
-      - name: Verify ratings folder exists
+      - name: Verify payment folder exists
         run: |
-          if [ ! -d "./ratings" ]; then
-            echo "❌ ERROR: ./ratings folder not found. Check your repo structure."
+          if [ ! -d "./payment" ]; then
+            echo "❌ ERROR: ./payment folder not found. Check your repo structure."
             ls -R
             exit 1
           else
-            echo "✅ ./ratings folder found, proceeding..."
+            echo "✅ ./payment folder found, proceeding..."
           fi
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -49,9 +49,9 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: ./ratings
+          context: ./payment
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/ratings:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/payment:latest
 
       # - name: Build and Push Image
       #   run: |
