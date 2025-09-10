@@ -1,4 +1,5 @@
-FROM fluentd
+#FROM fluentd
+FROM fluent/fluentd:v1.16-1-alpine3.19
 USER root
 RUN apk update && \
     apk add --virtual .build-dependencies build-base ruby-dev
