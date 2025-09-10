@@ -1,17 +1,17 @@
-name: Build and Deploy mysql Service
+name: Build and Deploy mongo Service
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'mysql/**'
-      - 'Helmcharts/mysql/**'
+      - 'mongo/**'
+      - 'Helmcharts/mongo/**'
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build and Push mysql Image
+    name: Build and Push mongo Image
     runs-on: ubuntu-latest
     permissions:  
       id-token: write   # required for OIDC
@@ -30,14 +30,14 @@ jobs:
       # - name: Login to Amazon ECR
       #   id: login-ecr
       #   uses: aws-actions/amazon-ecr-login@v2
-      - name: Verify mysql folder exists
+      - name: Verify mongo folder exists
         run: |
-          if [ ! -d "./mysql" ]; then
-            echo "❌ ERROR: ./mysql folder not found. Check your repo structure."
+          if [ ! -d "./mongo" ]; then
+            echo "❌ ERROR: ./mongo folder not found. Check your repo structure."
             ls -R
             exit 1
           else
-            echo "✅ ./mysql folder found, proceeding..."
+            echo "✅ ./mongo folder found, proceeding..."
           fi
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -49,9 +49,9 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: ./mysql
+          context: ./mongo
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mysql:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mongo:latest
 
       # - name: Build and Push Image
       #   run: |
