@@ -30,6 +30,15 @@ jobs:
       # - name: Login to Amazon ECR
       #   id: login-ecr
       #   uses: aws-actions/amazon-ecr-login@v2
+      - name: Verify web folder exists
+        run: |
+          if [ ! -d "./web" ]; then
+            echo "❌ ERROR: ./web folder not found. Check your repo structure."
+            ls -R
+            exit 1
+          else
+            echo "✅ ./web folder found, proceeding..."
+          fi
 
       - name: Build and Push Image
         run: |
