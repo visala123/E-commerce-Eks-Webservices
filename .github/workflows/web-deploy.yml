@@ -7,7 +7,7 @@ on:
     paths:
       - 'fluentd/**'
       - 'Helmcharts/fluentd/**'
-  workflow_fluentd:
+  workflow_dispatch:
 
 jobs:
   build:
