@@ -27,39 +27,40 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: us-east-1
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build and Push Image
         run: |
-          IMAGE=${{ steps.login-ecr.outputs.registry }}/web:latest
-          docker build -t $IMAGE ./services/web
-          docker push $IMAGE
+           docker build -t $IMAGE ./web
+          # IMAGE=${{ steps.login-ecr.outputs.registry }}/web:latest
+          # docker build -t $IMAGE ./web
+          # docker push $IMAGE
 
-  deploy:
-    name: Deploy Web to EKS
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v3
+  # deploy:
+  #   name: Deploy Web to EKS
+  #   runs-on: ubuntu-latest
+  #   needs: build
+  #   steps:
+  #     - name: Checkout Code
+  #       uses: actions/checkout@v3
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: us-east-1
+  #     - name: Configure AWS Credentials
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+  #         aws-region: us-east-1
 
-      - name: Update kubeconfig
-        run: |
-          aws eks update-kubeconfig --name my-eks-cluster --region us-east-1
+  #     - name: Update kubeconfig
+  #       run: |
+  #         aws eks update-kubeconfig --name my-eks-cluster --region us-east-1
 
-      - name: Deploy Helm Chart
-        run: |
-          helm upgrade web ./EKS/helm \
-            --install \
-            --namespace robot-shop \
-            --create-namespace \
-            --set image.repo=${{ steps.login-ecr.outputs.registry }} \
-            --set image.version=latest
+  #     - name: Deploy Helm Chart
+  #       run: |
+  #         helm upgrade web ./EKS/helm \
+  #           --install \
+  #           --namespace robot-shop \
+  #           --create-namespace \
+  #           --set image.repo=${{ steps.login-ecr.outputs.registry }} \
+  #           --set image.version=latest
