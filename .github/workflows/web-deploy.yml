@@ -1,17 +1,17 @@
-name: Build and Deploy Web Service
+name: Build and Deploy user Service
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'web/**'
-      - 'Helmcharts/web/**'
+      - 'user/**'
+      - 'Helmcharts/user/**'
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build and Push Web Image
+    name: Build and Push user Image
     runs-on: ubuntu-latest
     permissions:  
       id-token: write   # required for OIDC
@@ -30,14 +30,14 @@ jobs:
       # - name: Login to Amazon ECR
       #   id: login-ecr
       #   uses: aws-actions/amazon-ecr-login@v2
-      - name: Verify web folder exists
+      - name: Verify user folder exists
         run: |
-          if [ ! -d "./web" ]; then
-            echo "❌ ERROR: ./web folder not found. Check your repo structure."
+          if [ ! -d "./user" ]; then
+            echo "❌ ERROR: ./user folder not found. Check your repo structure."
             ls -R
             exit 1
           else
-            echo "✅ ./web folder found, proceeding..."
+            echo "✅ ./user folder found, proceeding..."
           fi
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -49,15 +49,14 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: ./web
+          context: ./user
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/web:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/user:latest
 
       # - name: Build and Push Image
       #   run: |
-      #      docker build -t $IMAGE ./web
-          # IMAGE=${{ steps.login-ecr.outputs.registry }}/web:latest
-          # docker build -t $IMAGE ./web
+          # IMAGE=${{ steps.login-ecr.outputs.registry }}/user:latest
+          # docker build -t $IMAGE ./user
           # docker push $IMAGE
 
   # deploy:
