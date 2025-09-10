@@ -1,17 +1,17 @@
-name: Build and Deploy dispatch Service
+name: Build and Deploy fluentd Service
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'dispatch/**'
-      - 'Helmcharts/dispatch/**'
-  workflow_dispatch:
+      - 'fluentd/**'
+      - 'Helmcharts/fluentd/**'
+  workflow_fluentd:
 
 jobs:
   build:
-    name: Build and Push dispatch Image
+    name: Build and Push fluentd Image
     runs-on: ubuntu-latest
     permissions:  
       id-token: write   # required for OIDC
@@ -30,14 +30,14 @@ jobs:
       # - name: Login to Amazon ECR
       #   id: login-ecr
       #   uses: aws-actions/amazon-ecr-login@v2
-      - name: Verify dispatch folder exists
+      - name: Verify fluentd folder exists
         run: |
-          if [ ! -d "./dispatch" ]; then
-            echo "❌ ERROR: ./dispatch folder not found. Check your repo structure."
+          if [ ! -d "./fluentd" ]; then
+            echo "❌ ERROR: ./fluentd folder not found. Check your repo structure."
             ls -R
             exit 1
           else
-            echo "✅ ./dispatch folder found, proceeding..."
+            echo "✅ ./fluentd folder found, proceeding..."
           fi
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -49,9 +49,9 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: ./dispatch
+          context: ./fluentd
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/dispatch:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/fluentd:latest
 
       # - name: Build and Push Image
       #   run: |
