@@ -39,10 +39,23 @@ jobs:
           else
             echo "✅ ./web folder found, proceeding..."
           fi
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and Push Image
-        run: |
-           docker build -t $IMAGE ./web
+      # 4️⃣ Build and push the image
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./web
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/web:latest
+
+      # - name: Build and Push Image
+      #   run: |
+      #      docker build -t $IMAGE ./web
           # IMAGE=${{ steps.login-ecr.outputs.registry }}/web:latest
           # docker build -t $IMAGE ./web
           # docker push $IMAGE
