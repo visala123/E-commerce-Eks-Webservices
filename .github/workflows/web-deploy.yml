@@ -1,17 +1,17 @@
-name: Build and Deploy payment Service
+name: Build and Deploy mysql Service
 
 on:
   push:
     branches:
       - main
     paths:
-      - 'payment/**'
-      - 'Helmcharts/payment/**'
+      - 'mysql/**'
+      - 'Helmcharts/mysql/**'
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build and Push payment Image
+    name: Build and Push mysql Image
     runs-on: ubuntu-latest
     permissions:  
       id-token: write   # required for OIDC
@@ -30,14 +30,14 @@ jobs:
       # - name: Login to Amazon ECR
       #   id: login-ecr
       #   uses: aws-actions/amazon-ecr-login@v2
-      - name: Verify payment folder exists
+      - name: Verify mysql folder exists
         run: |
-          if [ ! -d "./payment" ]; then
-            echo "❌ ERROR: ./payment folder not found. Check your repo structure."
+          if [ ! -d "./mysql" ]; then
+            echo "❌ ERROR: ./mysql folder not found. Check your repo structure."
             ls -R
             exit 1
           else
-            echo "✅ ./payment folder found, proceeding..."
+            echo "✅ ./mysql folder found, proceeding..."
           fi
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
@@ -49,9 +49,9 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: ./payment
+          context: ./mysql
           push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/payment:latest
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/mysql:latest
 
       # - name: Build and Push Image
       #   run: |
